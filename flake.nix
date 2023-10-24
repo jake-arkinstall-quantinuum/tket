@@ -13,6 +13,7 @@
             (import ./nix-support/tket.nix)
             (import ./nix-support/third-party-python-packages.nix)
             (import ./nix-support/pytket.nix)
+            (import ./nix-support/pytket-extensions.nix)
           ];
         };
       in {
@@ -22,6 +23,11 @@
         };
         devShells = {
           default = pkgs.mkShell { buildInputs = [ pkgs.tket pkgs.pytket ]; };
+          quantinuum = pkgs.mkShell {
+            buildInputs = [
+              (pkgs.pytketWithExtensions (p: [p.quantinuum]))
+            ];
+          };
         };
         checks = {
           tket-tests = pkgs.run-tket-tests;

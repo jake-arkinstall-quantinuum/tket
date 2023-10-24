@@ -41,4 +41,31 @@ self: super: {
     };
     doCheck = false;
   };
+  pyqir = super.python3.pkgs.callPackage ./pyqir.nix {
+    llvm = super.pkgs.llvm_14;
+  };
+  pyqir-parser = super.python3.pkgs.buildPythonPackage rec{
+    pname = "pyqir-parser";
+    version = "0.6.2";
+    format = "wheel";
+    src = super.fetchPypi{
+      inherit pname version format;
+      python = "cp36";
+      dist = "abi3";
+      sha256 = "";
+    };
+  };
+
+  #pyqir = super.python3.pkgs.buildPythonPackage rec{
+  #  pname = "pyqir";
+  #  version = "0.6.2";
+  #  format = "wheel";
+  #  src = super.fetchPypi{
+  #    inherit pname version format;
+  #    python = "py3";
+  #    dist = "py3";
+  #    sha256 = sha256:z7tpAmE0yucqcD6I+Zel3CBcnODboC6GHcQu9odZ9uU=;
+  #  };
+  #  propagatedBuildInputs = [ self.pyqir-parser ];
+  #};
 }
