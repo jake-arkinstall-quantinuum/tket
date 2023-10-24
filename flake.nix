@@ -33,6 +33,11 @@
               (pkgs.pytketWithExtensions (p: [p.aqt]))
             ];
           };
+          braket = pkgs.mkShell {
+            buildInputs = [
+              (pkgs.pytketWithExtensions (p: [p.braket]))
+            ];
+          };
 
           # For Later. See discussion in ./nix-support/third-party-python-packages.nix
           # cutensornet = pkgs.mkShell {

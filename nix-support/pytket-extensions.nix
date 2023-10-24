@@ -65,6 +65,34 @@ self: super:
           python -m pytest -s .
         '';
       };
+    braket = let
+      version = "v0.31.1";
+      sha256 = sha256:NjkPPMxQ7mPTCPZHO+drvjHGUmziyjvQockOelPAwJk=;
+    in
+      super.python3.pkgs.buildPythonPackage {
+        pname = "pytket-braket";
+        inherit version;
+        src = super.fetchFromGitHub rec{
+          owner = "CQCL";
+          repo = "pytket-braket";
+          rev = version;
+          inherit sha256;
+        };
+        propagatedBuildInputs = with super.python3Packages; [
+          self.pytket
+          self.amazon-braket-sdk
+          boto3
+        ];
+        checkInputs = with super.python3Packages; [
+          pytest
+          hypothesis
+        ];
+        checkPhase = ''
+          export HOME=$TMPDIR;
+          cd tests;
+          python -m pytest -s .
+        '';
+      };
     quantinuum = let
       version = "v0.25.0";
       sha256 = sha256:SNz6R+tVNqSbCYqOJKH+xddFYrtYRvJGip6AKc7/LWk=;

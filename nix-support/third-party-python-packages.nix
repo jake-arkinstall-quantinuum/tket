@@ -60,6 +60,111 @@ self: super: {
   pyqir = super.python3.pkgs.callPackage ./pyqir.nix {
     llvm = super.pkgs.llvm_14;
   };
+  antlr4_9_2 = (super.callPackage ./antlr4_9_2.nix {}).antlr4_9_2;
+  antlr4_9_2-python3-runtime = super.python3Packages.buildPythonPackage rec {
+    pname = "antlr4-python3-runtime";
+    inherit (self.antlr4_9_2.runtime.cpp) version src;
+    sourceRoot = "source/runtime/Python3";
+    checkPhase = ''
+      cd test*
+      python3 run.py
+    '';
+  };
+  openqasm3 = super.python3.pkgs.buildPythonPackage rec{
+    pname = "openqasm3";
+    version = "0.5.0";
+    format = "wheel";
+    src = super.fetchPypi{
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:QJkawFe548II0bNCQrCq2KO5hA3wM1plKx5OQkiTexw=;
+    };
+    extras = ["parser"];
+    propagatedBuildInputs = with super.python3Packages; [
+      self.antlr4_9_2-python3-runtime
+    ];
+  };
+
+
+  openpulse = super.python3.pkgs.buildPythonPackage rec{
+    pname = "openpulse";
+    version = "0.5.0";
+    format = "wheel";
+    src = super.fetchPypi{
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:yRtpYzNmOB8/28DJvow3wRSy2ORp9mf/mw94Yy4Aw5U=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+      self.openqasm3
+    ];
+  };
+
+  oqpy = super.python3.pkgs.buildPythonPackage rec{
+    pname = "oqpy";
+    version = "0.3.3";
+    format = "wheel";
+    src = super.fetchPypi{
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:DE9BaJ0qPrTihj7747MmcBPiHVJfEP/TFLin4EylMto=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+      self.openpulse
+      mypy-extensions
+    ];
+  };
+  amazon-braket-schemas = super.python3.pkgs.buildPythonPackage rec{
+    pname = "amazon_braket_schemas";
+    version = "1.19.1.post0";
+    format = "wheel";
+    src = super.fetchPypi {
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:idynQDQulZR/GzivaJ/xuk0q1xmmHbl66CcgISNPQYY=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+      pydantic
+    ];
+  };
+  amazon-braket-default-simulator = super.python3.pkgs.buildPythonPackage rec{
+    pname = "amazon_braket_default_simulator";
+    version = "1.20.1";
+    format = "wheel";
+    src = super.fetchPypi {
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:tlRSykjNyO/1jZjiyy/pevQHtcVK5K/l1rIRMkQvpIU=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+      opt-einsum
+    ];
+  };
+
+  amazon-braket-sdk = super.python3.pkgs.buildPythonPackage rec{
+    pname = "amazon_braket_sdk";
+    version = "1.59.1";
+    format = "wheel";
+    src = super.fetchPypi {
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:y5+bBm0vPlt3uiH7i3HWpWxRkpemcKn9j0w78WtAlZg=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+      self.amazon-braket-schemas
+      self.amazon-braket-default-simulator
+      self.oqpy
+      backoff
+      boltons
+      cloudpickle
+    ];
+  };
 
   # ForLater: Figure out cuda support.
   # -----------------------
