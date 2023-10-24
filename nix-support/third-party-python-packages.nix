@@ -5,7 +5,7 @@ self: super: {
       owner = "pybind";
       repo = "pybind11_json";
       rev = "0.2.13";
-      sha256 = "sha256:Kl/QflV2bBoH72/LW03K8JDlhBF+DYYXL47A5s1nmTw=";
+      sha256 = sha256:Kl/QflV2bBoH72/LW03K8JDlhBF+DYYXL47A5s1nmTw=;
     };
     nativeBuildInputs = [ super.cmake ];
     buildInputs = [ super.python3Packages.pybind11 super.nlohmann_json ];
@@ -16,7 +16,7 @@ self: super: {
       owner = "CQCL";
       repo = "qwasm";
       rev = "35ebe1e2551449d97b9948a600f8d2e4d7474df6";
-      sha256 = "sha256:g/QA5CpAR3exRDgVQMnXGIH8bEGtwGFBjjSblbdXRkU=";
+      sha256 = sha256:g/QA5CpAR3exRDgVQMnXGIH8bEGtwGFBjjSblbdXRkU=;
     };
   };
   lark-parser = super.python3.pkgs.buildPythonPackage {
@@ -26,7 +26,7 @@ self: super: {
       owner = "lark-parser";
       repo = "lark";
       rev = "refs/tags/0.12.0";
-      hash = "sha256-zcMGCn3ixD3dJg3GlC/ijs+U1JN1BodHLTXZc/5UR7Y=";
+      hash = sha256:zcMGCn3ixD3dJg3GlC/ijs+U1JN1BodHLTXZc/5UR7Y=;
     };
     doCheck = false;
   };
@@ -37,35 +37,57 @@ self: super: {
     inherit pname version;
     src = super.fetchPypi {
       inherit pname version;
-      sha256 = "sha256:g0qbjT2+o0NWL9mdXTNZpyb2v503M7zNK08wlvurna4=";
+      sha256 = sha256:g0qbjT2+o0NWL9mdXTNZpyb2v503M7zNK08wlvurna4=;
     };
     doCheck = false;
+  };
+  pydantic-2 = super.python3.pkgs.buildPythonPackage rec{
+    pname = "pydantic";
+    version = "2.1.1";
+    format = "wheel";
+    src = super.fetchPypi{
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:Q72/NZ1jBMV6/aFcK5V5cpW3ApSAgtTCOFHOdS8h2nA=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+      pydantic-core
+      annotated-types
+    ];
+
   };
   pyqir = super.python3.pkgs.callPackage ./pyqir.nix {
     llvm = super.pkgs.llvm_14;
   };
-  pyqir-parser = super.python3.pkgs.buildPythonPackage rec{
-    pname = "pyqir-parser";
-    version = "0.6.2";
-    format = "wheel";
-    src = super.fetchPypi{
-      inherit pname version format;
-      python = "cp36";
-      dist = "abi3";
-      sha256 = "";
-    };
-  };
 
-  #pyqir = super.python3.pkgs.buildPythonPackage rec{
-  #  pname = "pyqir";
-  #  version = "0.6.2";
-  #  format = "wheel";
-  #  src = super.fetchPypi{
-  #    inherit pname version format;
-  #    python = "py3";
-  #    dist = "py3";
-  #    sha256 = sha256:z7tpAmE0yucqcD6I+Zel3CBcnODboC6GHcQu9odZ9uU=;
-  #  };
-  #  propagatedBuildInputs = [ self.pyqir-parser ];
-  #};
+  # ForLater: Figure out cuda support.
+  # -----------------------
+  # To the best of my knowledge this would require
+  # modifying pkgs.config.cudaSupport and pkgs.config.allowUnfree.
+  # This seems somewhat invasive and could potentially
+  # break builds on non-cuda-enabled devices.
+  #
+  # As such, this is not supported just yet.
+  # -----------------------
+  #
+  # cuquantum = super.python3.pkgs.buildPythonPackage rec {
+  #   pname = "cuquantum";
+  #   version = "23.06.0";
+  #   format = "pyproject";
+  #   src = super.fetchFromGitHub {
+  #     owner = "NVIDIA";
+  #     repo = pname;
+  #     rev = "v${version}";
+  #     sha256 = sha256:Rym0d0dFZI+IPOEP4ZQ9kfEdjKtWRzL14R2kqKj02DA=;
+  #   };
+  #   unpackPhase = ''
+  #     ls $src;
+  #     cp -r $src/python/* .
+  #   '';
+  #   propagatedBuildInputs = with super.python3Packages; [
+  #     setuptools
+  #     packaging
+  #   ];
+  # };
 }

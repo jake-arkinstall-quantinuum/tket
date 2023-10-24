@@ -29,41 +29,112 @@ self: super:
           python -m pytest -s .
         '';
       };
+    aqt = let
+      version = "v0.29.0";
+      sha256 = sha256:e+QlF/fxXpc9fNJ7RiKO9tQtk0nuC6ko7NbuHfo1rno=;
+    in
+      super.python3.pkgs.buildPythonPackage {
+        pname = "pytket-aqt";
+        inherit version;
+        format = "pyproject";
+        src = super.fetchFromGitHub rec{
+          owner = "CQCL";
+          repo = "pytket-aqt";
+          rev = version;
+          inherit sha256;
+        };
+        propagatedBuildInputs = with super.python3Packages; [
+          self.pytket
+          self.pydantic-2
+          requests
+          types-requests
+          networkx
+          sympy
+          poetry-core
+        ];
+        checkInputs = with super.python3Packages; [
+          pytest
+          pytest-timeout
+          hypothesis
+          requests-mock
+          numpy
+        ];
+        checkPhase = ''
+          export HOME=$TMPDIR;
+          cd tests;
+          python -m pytest -s .
+        '';
+      };
     quantinuum = let
       version = "v0.25.0";
       sha256 = sha256:SNz6R+tVNqSbCYqOJKH+xddFYrtYRvJGip6AKc7/LWk=;
     in
       super.python3.pkgs.buildPythonPackage {
-      pname = "pytket-quantinuum";
-      inherit version;
-      src = super.fetchFromGitHub rec{
-        owner = "CQCL";
-        repo = "pytket-quantinuum";
-        rev = version;
-        inherit sha256;
+        pname = "pytket-quantinuum";
+        inherit version;
+        src = super.fetchFromGitHub rec{
+          owner = "CQCL";
+          repo = "pytket-quantinuum";
+          rev = version;
+          inherit sha256;
+        };
+        propagatedBuildInputs = with super.python3Packages; [
+          msal
+          nest-asyncio
+          websockets
+          types-requests
+          setuptools
+          self.pytket-extensions.qir
+          self.pytket
+        ];
+        checkInputs = with super.python3Packages; [
+          pytest
+          requests-mock
+          hypothesis
+          llvmlite
+        ];
+        checkPhase = ''
+          export HOME=$TMPDIR;
+          cd tests;
+          python -m pytest -s .
+        '';
       };
-      propagatedBuildInputs = with super.python3Packages; [
-        msal
-        nest-asyncio
-        websockets
-        types-requests
-        setuptools
-        self.pytket-extensions.qir
-        self.pytket
-      ];
-      checkInputs = with super.python3Packages; [
-        pytest
-        requests-mock
-        hypothesis
-        llvmlite
-      ];
-      checkPhase = ''
-        export HOME=$TMPDIR;
-        cd tests;
-        python -m pytest -s .
-      '';
-    };
+    # For Later. See discussion in ./third-party-python-packages.nix
+    #
+    # cutensornet = let
+    #   version = "v0.3.0";
+    #   sha256 = sha256:LMBAJkMBiaHTH4T5X7X0qr+Op4ANss6Avg91fvG9XF8=;
+    # in
+    #   super.python3.pkgs.buildPythonPackage {
+    #     pname = "pytket-cutensornet";
+    #     inherit version;
+    #     src = super.fetchFromGitHub rec{
+    #       owner = "CQCL";
+    #       repo = "pytket-cutensornet";
+    #       rev = version;
+    #       inherit sha256;
+    #     };
+    #     propagatedBuildInputs = with super.python3Packages; [
+    #       self.pytket
+    #       self.cuquantum
+    #     ];
+    #     checkInputs = with super.python3Packages; [
+    #       pytest
+    #       pytest-lazy-fixture
+    #       requests-mock
+    #       hypothesis
+    #       llvmlite
+    #     ];
+    #     checkPhase = ''
+    #       export HOME=$TMPDIR;
+    #       cd tests;
+    #       python -m pytest -s .
+    #     '';
+    #   };
   };
   pytketWithExtensions = extension-getter:
-    super.python3.withPackages(_: [super.pytket] ++ (extension-getter self.pytket-extensions));
+  let
+    extensions = extension-getter self.pytket-extensions;
+  in
+    super.python3.withPackages(_: [super.pytket] ++ extensions);
 }

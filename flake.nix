@@ -28,6 +28,18 @@
               (pkgs.pytketWithExtensions (p: [p.quantinuum]))
             ];
           };
+          aqt = pkgs.mkShell {
+            buildInputs = [
+              (pkgs.pytketWithExtensions (p: [p.aqt]))
+            ];
+          };
+
+          # For Later. See discussion in ./nix-support/third-party-python-packages.nix
+          # cutensornet = pkgs.mkShell {
+          #   buildInputs = [
+          #     (pkgs.pytketWithExtensions (p: [p.cutensornet]))
+          #   ];
+          # };
         };
         checks = {
           tket-tests = pkgs.run-tket-tests;
