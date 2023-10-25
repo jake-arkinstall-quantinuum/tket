@@ -127,6 +127,37 @@ self: super:
           python -m pytest -s .
         '';
       };
+    cirq = let
+      version = "v0.31.0";
+      sha256 = sha256:ad3LuaABvmxbqBo/RTKVT1pSgF8jaU555cGtGEFiacM=;
+    in
+      super.python3.pkgs.buildPythonPackage {
+        pname = "pytket-cirq";
+        inherit version;
+        src = super.fetchFromGitHub rec{
+          owner = "CQCL";
+          repo = "pytket-cirq";
+          rev = version;
+          inherit sha256;
+        };
+        propagatedBuildInputs = with super.python3Packages; [
+          self.pytket
+          cirq-core
+          cirq-google
+          protobuf
+        ];
+        checkInputs = with super.python3Packages; [
+          pytest
+          pytest-timeout
+          hypothesis
+          llvmlite
+        ];
+        checkPhase = ''
+          export HOME=$TMPDIR;
+          cd tests;
+          python -m pytest -s .
+        '';
+      };
     # For Later. See discussion in ./third-party-python-packages.nix
     #
     # cutensornet = let
