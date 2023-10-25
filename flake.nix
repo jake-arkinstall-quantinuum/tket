@@ -43,6 +43,11 @@
               (pkgs.pytketWithExtensions (p: [p.cirq]))
             ];
           };
+          iqm = pkgs.mkShell {
+            buildInputs = [
+              (pkgs.pytketWithExtensions (p: [p.iqm]))
+            ];
+          };
 
           # For Later. See discussion in ./nix-support/third-party-python-packages.nix
           # cutensornet = pkgs.mkShell {

@@ -150,7 +150,7 @@ self: super:
           pytest
           pytest-timeout
           hypothesis
-          llvmlite
+          requests-mock
         ];
         checkPhase = ''
           export HOME=$TMPDIR;
@@ -158,6 +158,37 @@ self: super:
           python -m pytest -s .
         '';
       };
+    iqm = let
+      version = "v0.8.0";
+      sha256 = sha256:lvBV5WaDs8fNOLFUWoOMlBxnVRV6nysGVaPeM1ueSq0=;
+    in
+      super.python3.pkgs.buildPythonPackage {
+        pname = "pytket-iqm";
+        inherit version;
+        src = super.fetchFromGitHub rec{
+          owner = "CQCL";
+          repo = "pytket-iqm";
+          rev = version;
+          inherit sha256;
+        };
+        propagatedBuildInputs = with super.python3Packages; [
+          self.pytket
+          self.iqm-client
+        ];
+        checkInputs = with super.python3Packages; [
+          pytest
+          pytest-timeout
+          hypothesis
+          requests-mock
+          types-requests
+        ];
+        checkPhase = ''
+          export HOME=$TMPDIR;
+          cd tests;
+          python -m pytest -s .
+        '';
+      };
+ 
     # For Later. See discussion in ./third-party-python-packages.nix
     #
     # cutensornet = let

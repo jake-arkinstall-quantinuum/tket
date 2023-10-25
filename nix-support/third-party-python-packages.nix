@@ -165,6 +165,21 @@ self: super: {
       cloudpickle
     ];
   };
+  iqm-client = super.python3.pkgs.buildPythonPackage rec{
+    pname = "iqm_client";
+    version = "14.1";
+    format = "wheel";
+    src = super.fetchPypi {
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:AjqUGULHplcSsiPvfknerIcZ4MhlgkiCBRPSDIwzZcA=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+      pydantic
+      requests
+    ];
+  };
 
   # ForLater: Figure out cuda support.
   # -----------------------
