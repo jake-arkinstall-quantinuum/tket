@@ -188,6 +188,71 @@ self: super:
           python -m pytest -s .
         '';
       };
+    # Not currently available as qiskit-terra is marked as broken in nixpkgs
+    # (segfaults)
+    #qiskit = let
+    #  version = "v0.45.0";
+    #  sha256 = sha256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=;
+    #in
+    #  super.python3.pkgs.buildPythonPackage {
+    #    pname = "pytket-qiskit";
+    #    inherit version;
+    #    src = super.fetchFromGitHub rec{
+    #      owner = "CQCL";
+    #      repo = "pytket-qiskit";
+    #      rev = version;
+    #      inherit sha256;
+    #    };
+    #    propagatedBuildInputs = with super.python3Packages; [
+    #      self.pytket
+    #      qiskit
+    #      numpy
+    #    ];
+    #    checkInputs = with super.python3Packages; [
+    #      pytest
+    #      pytest-timeout
+    #      hypothesis
+    #      requests-mock
+    #      types-requests
+    #    ];
+    #    checkPhase = ''
+    #      export HOME=$TMPDIR;
+    #      cd tests;
+    #      python -m pytest -s .
+    #    '';
+    #  };
+
+    # Not currently available as qiskit is a dependency
+    #pennylane = let
+    #  version = "v0.8.0";
+    #  sha256 = sha256:kxeXdbUNCtgmT5pzJoTiX/J4bOmn6zubGVzpj2LM+OU=;
+    #in
+    #  super.python3.pkgs.buildPythonPackage {
+    #    pname = "pytket-pennylane";
+    #    inherit version;
+    #    src = super.fetchFromGitHub rec{
+    #      owner = "CQCL";
+    #      repo = "pytket-pennylane";
+    #      rev = version;
+    #      inherit sha256;
+    #    };
+    #    propagatedBuildInputs = with super.python3Packages; [
+    #      self.pytket
+    #      self.pennylane
+    #    ];
+    #    checkInputs = with super.python3Packages; [
+    #      pytest
+    #      pytest-timeout
+    #      hypothesis
+    #      requests-mock
+    #      types-requests
+    #    ];
+    #    checkPhase = ''
+    #      export HOME=$TMPDIR;
+    #      cd tests;
+    #      python -m pytest -s .
+    #    '';
+    #  };
  
     # For Later. See discussion in ./third-party-python-packages.nix
     #

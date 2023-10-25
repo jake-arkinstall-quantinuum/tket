@@ -180,6 +180,63 @@ self: super: {
       requests
     ];
   };
+  autoray = super.python3.pkgs.buildPythonPackage rec{
+    pname = "autoray";
+    version = "0.6.7";
+    format = "wheel";
+    src = super.fetchPypi {
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:c3LUFrAYxJpi0j4eJWbe5/papZobQ/p1AdfQcbUK5IE=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+    ];
+  };
+  pennylane = super.python3.pkgs.buildPythonPackage rec{
+    pname = "PennyLane";
+    version = "0.32.0";
+    format = "wheel";
+    src = super.fetchPypi {
+      inherit pname version format;
+      python = "py3";
+      dist = "py3";
+      sha256 = sha256:P+hTlN4l0OGJyTxrkhcbz/Cb85Jhjr7VenQBo8gZcT0=;
+    };
+    propagatedBuildInputs = with super.python3Packages; [
+      self.autoray
+      numpy
+      scipy
+      cvxpy
+      cvxopt
+      cachetools
+      networkx
+      rustworkx
+      autograd
+      toml
+      appdirs
+      semantic-version
+      dask
+      matplotlib
+      opt-einsum
+      requests
+      typing-extensions
+      tomli
+    ];
+  };
+  #autoray = super.python3.pkgs.buildPythonPackage rec{
+  #  pname = "autoray";
+  #  version = "0.6.7";
+  #  format = "wheel";
+  #  src = super.fetchPypi {
+  #    inherit pname version format;
+  #    python = "py3";
+  #    dist = "py3";
+  #    sha256 = sha256:c3LUFrAYxJpi0j4eJWbe5/papZobQ/p1AdfQcbUK5IE=;
+  #  };
+  #  propagatedBuildInputs = with super.python3Packages; [
+  #  ];
+  #};
 
   # ForLater: Figure out cuda support.
   # -----------------------

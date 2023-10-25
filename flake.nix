@@ -48,6 +48,16 @@
               (pkgs.pytketWithExtensions (p: [p.iqm]))
             ];
           };
+          pennylane = pkgs.mkShell {
+            buildInputs = [
+              (pkgs.pytketWithExtensions (p: [p.pennylane]))
+            ];
+          };
+          qiskit = pkgs.mkShell {
+            buildInputs = [
+              (pkgs.pytketWithExtensions (p: [p.qiskit]))
+            ];
+          };
 
           # For Later. See discussion in ./nix-support/third-party-python-packages.nix
           # cutensornet = pkgs.mkShell {
